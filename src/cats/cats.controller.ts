@@ -10,6 +10,7 @@ import {
 import { CreateCatDto } from './dto/create-cat.dto';
 import { CatsService } from './cats.service';
 import { Cat } from './interfaces/cat.interfact';
+import { ParseIntPipe } from 'src/common/pipes/parse-int.pipe';
 
 @Controller('cats')
 export class CatsController {
@@ -17,18 +18,20 @@ export class CatsController {
 
   @Get()
   async findAll(): Promise<Cat[]> {
-    return this.catsService.findAll();
+    return await this.catsService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): string {
-    console.log(id);
+  findOne(
+    @Param('id', new ParseIntPipe())
+    id: number,
+  ): string {
     return `this action returns a ${id} cat`;
   }
 
   @Post()
   async create(@Body() createDto: CreateCatDto) {
-    this.catsService.create(createDto);
+    return this.catsService.create(createDto);
   }
 
   @Put(`:id`)
